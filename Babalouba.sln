@@ -1,0 +1,30 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29424.173
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Babalouba", "Babalouba\Babalouba.csproj", "{1F75F92B-7592-4485-A738-A3E3986AF2E4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{5DCEC495-2A03-4EF1-AAC2-2C984CFF2AF0}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+		README.md = README.md
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1F75F92B-7592-4485-A738-A3E3986AF2E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F75F92B-7592-4485-A738-A3E3986AF2E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1F75F92B-7592-4485-A738-A3E3986AF2E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F75F92B-7592-4485-A738-A3E3986AF2E4}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {29F46A76-B545-43BB-A7CB-B617185CDAE4}
+	EndGlobalSection
+EndGlobal
