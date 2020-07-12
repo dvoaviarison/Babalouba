@@ -9,5 +9,12 @@ build:
 test: off
 artifacts:
 - path: .\Babalouba\bin\Release\netcoreapp3.1
-  name: 'Babalouba-{version}'
+  name: 'Babalouba'
   type: zip
+notifications:
+- provider: Slack
+  incoming_webhook: https://hooks.slack.com/services/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
+  channel: '#appveyor-ci'
+  on_build_success: true
+  on_build_failure: true
+  on_build_status_changed: false
