@@ -13,7 +13,7 @@ artifacts:
   type: zip
 notifications:
 - provider: Slack
-  incoming_webhook: https://hooks.slack.com/services/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
+  incoming_webhook: https://hooks.slack.com/services/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
   channel: '#appveyor-ci'
   on_build_success: true
   on_build_failure: true
