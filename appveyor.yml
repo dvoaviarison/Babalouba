@@ -9,5 +9,5 @@ build:
 test: off
 artifacts:
 - path: .\Babalouba\bin\Release\netcoreapp3.1
-  name: Babalouba-{build}
+  name: 'Babalouba-{version}''
   type: zip
