@@ -1,0 +1,10 @@
+version: 1.0.{build}
+configuration: Release
+platform: Any CPU
+build:
+  project: Visual Studio 2019
+  publish_core_console: true
+  verbosity: minimal
+test: off
+artifacts:
+- path: .\Babalouba\bin\Release\netcoreapp3.1\Babalouba.exe
