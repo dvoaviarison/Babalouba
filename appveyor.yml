@@ -8,6 +8,6 @@ build:
   verbosity: minimal
 test: off
 artifacts:
-- path: .\Babalouba\bin\Release\netcoreapp3.1\Babalouba.exe
-  name: Babalouba
+- path: .\Babalouba\bin\Release\netcoreapp3.1
+  name: Babalouba-{build}
   type: zip
