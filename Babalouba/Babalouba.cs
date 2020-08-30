@@ -5,6 +5,8 @@ using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.Layout;
 using Babalouba.Properties;
@@ -13,13 +15,15 @@ namespace Babalouba
 {
     public class Babalouba : Form
     {
+        private const string PlaylistFileName = "playlist.bbl";
+        private const string DefaultThemeFileName = "DefaultTheme.bth";
+        private const string ConfigFileName = "babalouba.json";
         private int currentVolume;
         private ListBox lstCurrentPlaylistBox;
         public string currentSong;
         public Dictionary<string, string> mapPathFile;
         public Dictionary<string, string> mapFolder;
         private string previousSong;
-        private string defaultThemePath;
         public Player player;
         private bool toTray;
         private bool isFullScreen;
@@ -103,6 +107,7 @@ namespace Babalouba
         private Button btnExportTheme;
         private SaveFileDialog dlgExportTheme;
         private OpenFileDialog dlgImportTheme;
+        private Configuration configuration;
 
         public Babalouba()
         {
@@ -120,8 +125,9 @@ namespace Babalouba
             this.previousSong = string.Empty;
             this.mapPathFile = new Dictionary<string, string>();
             this.mapFolder = new Dictionary<string, string>();
-            this.lstFolder.Items.Add((object)Environment.GetFolderPath(Environment.SpecialFolder.MyMusic));
-            this.lstFolder.Items.Add((object)Environment.GetFolderPath(Environment.SpecialFolder.MyVideos));
+            this.configuration = new Configuration();
+            this.configuration.Load(ConfigFileName);
+            this.configuration.LibraryFolders?.ForEach(folder => this.lstFolder.Items.Add((object)folder));
             this.currentVolume = 500;
             this.player = new Player("Media");
             this.player.OpenFile += new Player.OpenFileEventHandler(this.OnPlayerOpenFile);
@@ -137,7 +143,6 @@ namespace Babalouba
             this.location = this.Location;
             this.dlgExportTheme.Filter = "BBL theme files (*.bth)|*.bth|All files (*.*)|*.*";
             this.dlgImportTheme.Filter = "BBL theme files (*.bth)|*.bth|All files (*.*)|*.*";
-            this.defaultThemePath = "DefaultTheme.bth";
         }
 
         private void OnImportTheme(object sender, EventArgs e)
@@ -166,9 +171,9 @@ namespace Babalouba
             base.OnKeyDown(e);
         }
 
-        protected override void OnClosing(CancelEventArgs e)
+        protected override async void OnClosing(CancelEventArgs e)
         {
-            this.SaveBeforeClosing();
+            await SaveBeforeClosing();
             base.OnClosing(e);
         }
 
@@ -507,15 +512,27 @@ namespace Babalouba
         {
             if (this.dlgAddFolder.ShowDialog() != DialogResult.OK)
                 return;
-            this.lstFolder.Items.Add((object)this.dlgAddFolder.SelectedPath);
+            AddFolder(this.dlgAddFolder.SelectedPath);
             this.FillMap();
+        }
+
+        private void AddFolder(string folder)
+        {
+            this.lstFolder.Items.Add(folder);
+            this.configuration.LibraryFolders.Add(folder);
+        }
+
+        private void RemoveSelectedFolder()
+        {
+            this.lstFolder.Items.RemoveAt(this.lstFolder.SelectedIndex);
+            this.configuration.LibraryFolders.RemoveAt(this.lstFolder.SelectedIndex);
         }
 
         private void OnRemoveFolder(object sender, EventArgs e)
         {
             if (this.lstFolder.SelectedItems.Count <= 0)
                 return;
-            this.lstFolder.Items.RemoveAt(this.lstFolder.SelectedIndex);
+            RemoveSelectedFolder();
             this.FillMap();
         }
 
@@ -582,15 +599,15 @@ namespace Babalouba
         private bool LoadPlayLists()
         {
             this.tabPlaylist1.Controls.Clear();
-            if (!File.Exists("playlist.bbl"))
+            if (!File.Exists(PlaylistFileName))
             {
                 PlayList playList = new PlayList();
                 playList.Name = "PlayList1";
                 this.BblPlayList = new PlaylistCollection();
                 this.BblPlayList.PlayLists.Add(playList);
-                this.playListLoader.SavePlayLists(this.BblPlayList, "playlist.bbl");
+                this.playListLoader.SavePlayLists(this.BblPlayList, PlaylistFileName);
             }
-            this.BblPlayList = this.playListLoader.LoadPlayLists("playlist.bbl");
+            this.BblPlayList = this.playListLoader.LoadPlayLists(PlaylistFileName);
             List<Song> songList = new List<Song>();
             if (this.playListLoader.Success)
             {
@@ -612,9 +629,9 @@ namespace Babalouba
 
         private bool LoadTheme()
         {
-            if (!File.Exists(this.defaultThemePath))
-                this.SaveCurrentTheme(this.defaultThemePath);
-            this.LoadTheme(this.defaultThemePath);
+            if (!File.Exists(DefaultThemeFileName))
+                this.SaveCurrentTheme(DefaultThemeFileName);
+            this.LoadTheme(DefaultThemeFileName);
             return true;
         }
 
@@ -660,10 +677,11 @@ namespace Babalouba
             }, filePath);
         }
 
-        private bool SaveBeforeClosing()
+        private async Task<bool> SaveBeforeClosing()
         {
-            this.playListLoader.SavePlayLists(this.BblPlayList, "playlist.bbl");
-            this.SaveCurrentTheme(this.defaultThemePath);
+            this.playListLoader.SavePlayLists(this.BblPlayList, PlaylistFileName);
+            this.SaveCurrentTheme(DefaultThemeFileName);
+            await this.configuration.Save(ConfigFileName);
             return this.playListLoader.Success;
         }
 

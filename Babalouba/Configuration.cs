@@ -1,22 +1,10 @@
-﻿using System;
+﻿using System.Collections.Generic;
 
 namespace Babalouba
 {
-    [Serializable]
     public class Configuration
     {
-        private string defaultTheme;
-
-        public string DefaultTheme
-        {
-            get
-            {
-                return this.defaultTheme;
-            }
-            set
-            {
-                this.defaultTheme = value;
-            }
-        }
+        public string DefaultTheme { get; set; } 
+        public List<string> LibraryFolders { get; set; }
     }
 }
